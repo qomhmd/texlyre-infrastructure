@@ -18,7 +18,7 @@ services:
       - "traefik.http.routers.dashboard.rule=Host(`${TRAEFIK_HOST}`) || Host(`traefik.${BASE_DOMAIN:-localhost}`) || PathPrefix(`/traefik`)"
       - "traefik.http.routers.dashboard.service=api@internal"
       - "traefik.http.routers.dashboard.entrypoints=web"
-      - "traefik.http.routers.dashboard-secure.rule=Host(`${TRAEFIK_HOST}`) || Host(`traefik.${BASE_DOMAIN}`) || PathPrefix(`/traefik`)"
+      - "traefik.http.routers.dashboard-secure.rule=Host(`${TRAEFIK_HOST}`) || Host(`traefik.${BASE_DOMAIN:-localhost}`) || PathPrefix(`/traefik`)"
       - "traefik.http.routers.dashboard-secure.service=api@internal"
       - "traefik.http.routers.dashboard-secure.entrypoints=websecure"
       - "traefik.http.routers.dashboard-secure.tls=true"
@@ -89,7 +89,7 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}-ywebrtc
     restart: unless-stopped
     environment:
-      - NODE_ENV=production
+      - NODE_ENV={ENVIRONMENT}
       - PORT=1234
       - API_ORIGINS=${API_ORIGINS}
     networks:
@@ -112,11 +112,11 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}-peerjs
     restart: unless-stopped
     environment:
-      - NODE_ENV=production
+      - NODE_ENV={ENVIRONMENT}
       - PORT=9000
       - API_ORIGINS=${API_ORIGINS}
       - PEERJS_CORS=${API_ORIGINS}
-      - HOST_DOMAIN=${PRODUCTION_DOMAIN}
+      - HOST_DOMAIN=${BASE_DOMAIN}
       - PEERJS_PORT=9000
       - PEERJS_PATH=/texlyre
       - PEERJS_KEY=peerjs
@@ -141,7 +141,7 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}-filepizza
     restart: unless-stopped
     environment:
-      - NODE_ENV=production
+      - NODE_ENV={ENVIRONMENT}
       - PORT=8080
       - REDIS_PORT=${REDIS_PORT}
       - PEERJS_SERVERS=${PEERJS_SERVERS}
